@@ -1,28 +1,27 @@
 import discord
-from discord.ext import commands
+from discord import app_commands
 import random
 import os
 from dotenv import load_dotenv
 
-intents = discord.Intents.default()
-intents.message_content = True
-
-bot = discord.Bot(
-        intents=discord.Intents.all(),  # 全てのインテンツを利用できるようにする
-        activity=discord.Game("Discord Bot入門"),  # "**をプレイ中"の"**"を設定,
-)
+intents = discord.Intents.all() # 権限
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
 #起動時
-@bot.event
+@client.event
 async def on_ready():
-    print(f'We have logged in as {bot.user}')
+    print(f'We have logged in as {client.user}')
+    await tree.sync() # スラッシュコマンドを同期
 
-@bot.command(name="占い", description="今日の運勢を占います")
-async def fortune(ctx):
+
+@tree.command(name="fortune", description="今日の運勢を占います")
+async def fortune(ctx: discord.Interaction):
     fortunes = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"]
     await ctx.respond(f"あなたの今日の運勢は...{random.choice(fortunes)}です！")
+    print("/fortune")
 
 #起動
 load_dotenv()
-os.environ.get('DISCORD_TOKEN')
-bot.run('DISCORD_TOKEN')
+TOKEN=os.environ.get('DISCORD_TOKEN')
+client.run(TOKEN)
