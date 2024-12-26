@@ -8,19 +8,21 @@ intents = discord.Intents.all() # 権限
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-#起動時
+# 起動時
 @client.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    await client.change_presence(activity=discord.Game(name="占い"))
+    print(f'{client.user}起動')
     await tree.sync() # スラッシュコマンドを同期
 
 @tree.command(name="fortune", description="今日の運勢を占います")
-async def fortune(ctx: discord.Interaction):
+async def fortune(interaction: discord.Interaction):
     fortunes = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"]
-    await interaction.response.send_message(f"あなたの今日の運勢は...{random.choice(fortunes)}です！")
-    print("/fortune")
+    message = f"あなたの今日の運勢は...{random.choice(fortunes)}です！"
+    await interaction.response.send_message(message)
+    print(f"/fortune\n{message}")
 
-#起動
+# 起動
 load_dotenv()
-TOKEN=os.environ.get('DISCORD_TOKEN')
+TOKEN = os.environ.get('DISCORD_TOKEN')
 client.run(TOKEN)
