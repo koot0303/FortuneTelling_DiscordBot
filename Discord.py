@@ -15,6 +15,7 @@ async def on_ready():
     print(f'{client.user}起動')
     await tree.sync() # スラッシュコマンドを同期
 
+# /fortune
 @tree.command(name="fortune", description="今日の運勢を占います")
 async def fortune(interaction: discord.Interaction):
     fortunes = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"]
